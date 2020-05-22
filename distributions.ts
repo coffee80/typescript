@@ -2,9 +2,17 @@ namespace FP_Statistics
 {
     abstract class Distribution
     {
+        // probability from x1 to x2
         public abstract probability(x1:number, x2?:number):number;
         public abstract mean():number;
         public abstract variance():number;
+
+        //Conversion to z-values, assuming the distribution can be 
+        //approximated to normal
+        zValue(x:number):number
+        {
+            return (x-this.mean()) / (this.standarddeviation());
+        }
 
         public standarddeviation():number
         {
@@ -13,6 +21,7 @@ namespace FP_Statistics
     }
 
     //Writing this so it can be used both statically and object-wise
+    //the object uses the methods of the class on its state, making for a hybrid experience
     export class BinomialDistribution extends Distribution
     {
         n:number;
@@ -76,5 +85,80 @@ namespace FP_Statistics
             return BinomialDistribution.variance(this.n, this.p);
         }
 
-    }    
+    }
+    
+    export class NormalDistribution extends Distribution
+    {
+        mu:number;
+        sigma:number;
+        
+        constructor(mu:number, sigma:number)
+        {
+            super();
+            this.mu = mu;
+            this.sigma = sigma;
+        }
+
+        public mean():number
+        {
+            return this.mu;
+        }
+
+        public variance():number
+        {
+            return this.sigma*this.sigma;
+        }
+
+        public standarddeviation()
+        {
+            return this.sigma;
+        }
+
+        //this one can be a problem. The best way would be a table for the z values
+        public probability(x1:number, x2:number):number
+        {
+            throw new Error("Not yet implemented");
+        }
+
+
+    }
+
+    export class SampleProportionDistribution extends Distribution
+    {
+        p:number;
+        n:number;
+
+        constructor(n:number, p:number)
+        {
+            super();
+            this.n = n;
+            this.p = p;
+        }
+
+        public mean():number
+        {
+            return this.p;
+        }
+
+        public standarddeviation():number
+        {
+            return (this.p*(1-this.p))/this.n;
+        }
+
+        public variance():number
+        {
+            return this.standarddeviation()*this.standarddeviation();
+        }
+
+        public probability(x1:number, x2:number):number
+        {
+            //would be good to get to the z-values;
+            var z1 = this.zValue(x1);
+            var z2 = this.zValue(x2);
+
+            
+        }
+
+    }
+
 }
