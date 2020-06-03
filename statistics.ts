@@ -46,7 +46,7 @@ namespace FP_Statistics
             var n = this.data.length;
             var avg = this.mean();
             for(var i=0;i<n;i++)
-                res+=Math.pow(this.data[i]-avg,2)/n;
+                res+=Math.pow(this.data[i]-avg,2)/(n-1);
             return res;
         }
     
